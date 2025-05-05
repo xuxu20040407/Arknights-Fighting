@@ -29,6 +29,7 @@ CLICK_TASKS = [
 CLOSE_TASK = ((2300, 1200, 2400, 1400), 10)
 MAX_RETRY = 2       # 失败重试次数
 MAX_REPEAT = 10     # 最大重复次数
+ITERATION=10
 
 # 函数定义 ==============================================
 def save_result_to_json(result, output_dir="./results"):
@@ -169,7 +170,6 @@ def monitor_templates(last_task_region,result):
     
     while repeat_count < MAX_REPEAT:
         loop_start = time.time()  # 记录循环开始时间
-        print("正在检测模板...")
         
         screenshot = take_screenshot_cv()
         if screenshot is None:
@@ -238,17 +238,6 @@ def monitor_templates(last_task_region,result):
 
 # 主程序 ==============================================
 def main():
-    # 连接模拟器
-    try:
-        subprocess.run([ADB_PATH, "connect", f"127.0.0.1:{MUMU_ADB_PORT}"], check=True)
-    except:
-        print("❌ 无法连接MuMu模拟器")
-        sys.exit(1)
-    
-    print("="*40)
-    print(" MuMu模拟器自动化脚本")
-    print("="*40)
-    
     # 执行点击任务
     for task_num, (region, wait_time) in enumerate(CLICK_TASKS[:-1], 1):
         print(f"[{task_num}/{len(CLICK_TASKS)}] 执行任务...")
@@ -282,4 +271,17 @@ def main():
     
 
 if __name__ == "__main__":
-    main()
+    # 连接模拟器
+    try:
+        subprocess.run([ADB_PATH, "connect", f"127.0.0.1:{MUMU_ADB_PORT}"], check=True)
+    except:
+        print("❌ 无法连接MuMu模拟器")
+        sys.exit(1)
+    
+    print("="*40)
+    print(" MuMu模拟器自动化收集斗蛐蛐数据脚本")
+    print("="*40)
+    for i in range(ITERATION):
+        print(f"第{i+1}次开局")
+        main()
+        time.sleep(20)
